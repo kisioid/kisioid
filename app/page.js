@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -57,7 +56,6 @@ export default function Home() {
     <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", background: "#F0F2F7", minHeight: "100vh" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');`}</style>
 
-      {/* NAVBAR */}
       <nav style={{ background: "#1B3A6B", padding: "0 28px", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ width: 40, height: 40, background: "#D4A017", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 18, color: "#1B3A6B" }}>K</div>
@@ -69,7 +67,6 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* HERO */}
       <div style={{ background: "linear-gradient(135deg, #1B3A6B 0%, #2D5FA8 100%)", padding: "64px 28px 72px", textAlign: "center" }}>
         <div style={{ display: "inline-block", background: "#D4A017", color: "#1B3A6B", fontSize: 12, fontWeight: 800, padding: "5px 18px", borderRadius: 50, marginBottom: 24, letterSpacing: 1 }}>
           PLATFORM LATIHAN SOAL #1 INDONESIA
@@ -91,12 +88,9 @@ export default function Home() {
         </div>
       </div>
 
-      {/* PILIH JENJANG */}
       <div style={{ padding: "48px 24px", maxWidth: 680, margin: "0 auto" }}>
         <h2 style={{ fontSize: 26, fontWeight: 900, textAlign: "center", marginBottom: 8 }}>Pilih Jenjangmu</h2>
-        <p style={{ textAlign: "center", color: "#4A5568", fontSize: 16, marginBottom: 32 }}>
-          Klik jenjang untuk melihat paket latihan soal yang tersedia
-        </p>
+        <p style={{ textAlign: "center", color: "#4A5568", fontSize: 16, marginBottom: 32 }}>Klik jenjang untuk melihat paket latihan soal yang tersedia</p>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
           {categories.map((cat) => (
             <div
@@ -126,13 +120,12 @@ export default function Home() {
         </div>
       </div>
 
-      {/* MGMP BANNER */}
       <div style={{ padding: "0 24px 48px", maxWidth: 680, margin: "0 auto" }}>
         <div style={{ background: "linear-gradient(135deg, #1B3A6B, #2D5FA8)", borderRadius: 22, padding: "32px 28px", color: "white" }}>
           <div style={{ fontSize: 28, marginBottom: 12 }}>🤝</div>
           <h3 style={{ fontWeight: 900, fontSize: 20, marginBottom: 10 }}>Bermitra dengan Ribuan MGMP Se-Indonesia</h3>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", lineHeight: 1.7, marginBottom: 20 }}>
-            Soal KisioID disusun berdasarkan kisi-kisi resmi MGMP dari setiap kabupaten/kota di seluruh Indonesia — memastikan relevansi dengan ujian lokal di daerahmu.
+            Soal KisioID disusun berdasarkan kisi-kisi resmi MGMP dari setiap kabupaten/kota di seluruh Indonesia.
           </p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             {["34 Provinsi", "500+ Kab/Kota", "Semua Mapel", "Update Berkala"].map(tag => (
@@ -142,7 +135,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* FITUR */}
       <div style={{ padding: "0 24px 48px", maxWidth: 680, margin: "0 auto" }}>
         <h2 style={{ fontSize: 24, fontWeight: 900, textAlign: "center", marginBottom: 24 }}>Kenapa KisioID?</h2>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
@@ -156,18 +148,14 @@ export default function Home() {
         </div>
       </div>
 
-      {/* CTA */}
       <div style={{ background: "#1B3A6B", padding: "48px 28px", textAlign: "center" }}>
         <h2 style={{ color: "white", fontWeight: 900, fontSize: 26, marginBottom: 12 }}>Siap Mulai Latihan?</h2>
-        <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 16, marginBottom: 28 }}>
-          Pilih jenjangmu dan mulai latihan soal sekarang juga
-        </p>
+        <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 16, marginBottom: 28 }}>Pilih jenjangmu dan mulai latihan soal sekarang juga</p>
         <button style={{ background: "#D4A017", border: "none", borderRadius: 12, padding: "16px 44px", color: "#1B3A6B", fontWeight: 800, fontSize: 17, cursor: "pointer", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
           Mulai Latihan Gratis →
         </button>
       </div>
 
-      {/* FOOTER */}
       <div style={{ background: "#0F1E3A", padding: "24px", textAlign: "center" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 8 }}>
           <div style={{ width: 30, height: 30, background: "#D4A017", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 14, color: "#1B3A6B" }}>K</div>
@@ -177,64 +165,5 @@ export default function Home() {
       </div>
 
     </div>
-=======
-export default function Home() {
-  return (
-    <main style={{
-      minHeight: "100vh",
-      background: "#1B3A6B",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      fontFamily: "sans-serif",
-      color: "white",
-      textAlign: "center",
-      padding: "20px"
-    }}>
-      <div style={{
-        background: "#D4A017",
-        width: 60,
-        height: 60,
-        borderRadius: 14,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: 28,
-        fontWeight: 900,
-        color: "#1B3A6B",
-        marginBottom: 20
-      }}>
-        K
-      </div>
-
-      <h1 style={{ fontSize: 36, fontWeight: 900, marginBottom: 8 }}>
-        Kisio<span style={{ color: "#D4A017" }}>ID</span>
-      </h1>
-
-      <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 16, marginBottom: 40 }}>
-        Platform Latihan Soal #1 Indonesia
-      </p>
-
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
-        {["SD", "SMP", "SMA", "CPNS"].map(j => (
-          <div key={j} style={{
-            background: "rgba(255,255,255,0.1)",
-            border: "1px solid rgba(255,255,255,0.2)",
-            borderRadius: 12,
-            padding: "12px 24px",
-            fontSize: 18,
-            fontWeight: 800
-          }}>
-            {j}
-          </div>
-        ))}
-      </div>
-
-      <p style={{ marginTop: 40, color: "#D4A017", fontWeight: 700 }}>
-        🚀 Segera Hadir
-      </p>
-    </main>
->>>>>>> 3f1895744aa78aa6e104b6d82cf47be883ed4915
   );
 }
