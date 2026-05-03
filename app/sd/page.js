@@ -38,8 +38,8 @@ const paketSoal = [
 
 const fiturPaket = [
   { icon: "📝", text: "Soal lengkap sesuai kisi-kisi MGMP" },
-  { icon: "⏱️", text: "Timer standar & custom sesuai kebutuhanmu" },
-  { icon: "💡", text: "Pembahasan lengkap setiap soal" },
+  { icon: "⏱️", text: "Timer standar & custom" },
+  { icon: "💡", text: "Pembahasan lengkap tiap soal" },
   { icon: "📊", text: "Analisis hasil & skor detail" },
   { icon: "📋", text: "Download kisi-kisi PDF" },
   { icon: "📚", text: "Riwayat latihan tersimpan" },
@@ -49,6 +49,14 @@ const kisiKisiDummy = [
   { bab: "Bab 1", judul: "Bilangan dan Operasi Hitung", kompetensi: "Memahami operasi hitung bilangan bulat dan pecahan", indikator: ["Menentukan hasil operasi hitung campuran", "Menyelesaikan soal cerita operasi hitung", "Membandingkan pecahan"] },
   { bab: "Bab 2", judul: "Geometri dan Pengukuran", kompetensi: "Memahami bangun datar dan pengukuran", indikator: ["Menghitung luas dan keliling bangun datar", "Mengkonversi satuan panjang dan berat", "Menyelesaikan soal pengukuran"] },
   { bab: "Bab 3", judul: "Statistika Sederhana", kompetensi: "Menyajikan dan mengolah data sederhana", indikator: ["Membaca diagram batang dan garis", "Menghitung rata-rata, median, modus", "Menyajikan data dalam tabel"] },
+];
+
+const filterList = [
+  { id: "semua", label: "Semua" },
+  { id: "terbaru", label: "🆕 Terbaru" },
+  { id: "terpopuler", label: "🔥 Terpopuler" },
+  { id: "uts", label: "📝 UTS" },
+  { id: "uas", label: "📋 UAS" },
 ];
 
 export default function SD() {
@@ -69,14 +77,6 @@ export default function SD() {
   const formatSiswa = (n) => n >= 1000 ? `${(n/1000).toFixed(1)}rb` : n;
   const sudahLengkap = provinsi && kabupaten && kelas && mapel;
 
-  const filterList = [
-    { id: "semua", label: "Semua" },
-    { id: "terbaru", label: "🆕 Terbaru" },
-    { id: "terpopuler", label: "🔥 Terpopuler" },
-    { id: "uts", label: "📝 UTS" },
-    { id: "uas", label: "📋 UAS" },
-  ];
-
   const filteredPaket = activeFilter === "semua"
     ? paketSoal
     : paketSoal.filter(p => p.filter.includes(activeFilter));
@@ -95,32 +95,18 @@ export default function SD() {
     setShowTimerSetup(false);
   };
 
-  const steps = [
-    { label: "Daerah", done: !!(provinsi && kabupaten) },
-    { label: "Kelas", done: !!kelas },
-    { label: "Mapel", done: !!mapel },
-    { label: "Paket", done: false },
-  ];
-
   return (
-    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", background: "#F0F2F7", minHeight: "100vh" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
-        select { outline: none; }
-        input[type=range] { accent-color: #E67E22; }
-      `}</style>
+    <div className="min-h-screen bg-gray-100">
 
       {/* MODAL */}
       {showModal && selectedPaket && (
-        <div onClick={closeModal} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-          <div onClick={(e) => e.stopPropagation()} style={{ background: "white", borderRadius: 24, padding: 28, maxWidth: 500, width: "100%", maxHeight: "90vh", overflowY: "auto" }}>
-
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
             {!showTimerSetup ? (
               <>
-                {/* DETAIL PAKET */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+                <div className="flex justify-between items-start mb-4">
                   <div style={{ fontSize: 44 }}>{selectedPaket.emoji}</div>
-                  <button onClick={closeModal} style={{ background: "#F0F2F7", border: "none", borderRadius: 8, width: 34, height: 34, cursor: "pointer", fontSize: 16, fontWeight: 700 }}>✕</button>
+                  <button onClick={closeModal} className="btn-close">✕</button>
                 </div>
 
                 {selectedPaket.badge && (
@@ -130,23 +116,21 @@ export default function SD() {
                 <div style={{ fontWeight: 900, fontSize: 20, color: "#0F1E3A", marginBottom: 6 }}>{selectedPaket.judul}</div>
                 <div style={{ fontSize: 14, color: "#4A5568", lineHeight: 1.7, marginBottom: 16 }}>{selectedPaket.desc}</div>
 
-                {/* Stats */}
-                <div style={{ background: "#F8F9FA", borderRadius: 14, padding: 16, marginBottom: 20 }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, textAlign: "center" }}>
-                    {[["📝", `${selectedPaket.soal}`, "Soal"], ["⏱️", `${selectedPaket.waktu} mnt`, "Waktu Standar"], ["👥", `${formatSiswa(selectedPaket.siswa)}`, "Sudah Mengerjakan"]].map(([icon, val, label]) => (
+                <div style={{ background: "#F8F9FA", borderRadius: 14, padding: 16, marginBottom: 16 }}>
+                  <div className="grid-3" style={{ textAlign: "center" }}>
+                    {[["📝", `${selectedPaket.soal}`, "Soal"], ["⏱️", `${selectedPaket.waktu} mnt`, "Waktu"], ["👥", `${formatSiswa(selectedPaket.siswa)}`, "Siswa"]].map(([icon, val, label]) => (
                       <div key={label} style={{ background: "white", borderRadius: 10, padding: 12 }}>
                         <div style={{ fontSize: 20 }}>{icon}</div>
                         <div style={{ fontWeight: 900, fontSize: 15, color: "#1B3A6B" }}>{val}</div>
-                        <div style={{ fontSize: 10, color: "#9AA5B4", fontWeight: 600, marginTop: 2 }}>{label}</div>
+                        <div style={{ fontSize: 10, color: "#9AA5B4", fontWeight: 600 }}>{label}</div>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Fitur yang didapat */}
-                <div style={{ marginBottom: 20 }}>
-                  <div style={{ fontWeight: 800, fontSize: 14, color: "#1B3A6B", marginBottom: 12 }}>✨ Yang kamu dapat setelah beli:</div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ fontWeight: 800, fontSize: 13, color: "#1B3A6B", marginBottom: 10 }}>✨ Yang kamu dapat:</div>
+                  <div className="grid-2">
                     {fiturPaket.map((f, i) => (
                       <div key={i} style={{ display: "flex", gap: 8, alignItems: "center", background: "#F8F9FA", borderRadius: 8, padding: "8px 10px" }}>
                         <span style={{ fontSize: 14 }}>{f.icon}</span>
@@ -156,109 +140,79 @@ export default function SD() {
                   </div>
                 </div>
 
-                {/* Harga & CTA */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-                  <div>
-                    <div style={{ fontSize: 28, fontWeight: 900, color: "#E67E22" }}>{formatHarga(selectedPaket.harga)}</div>
-                    <div style={{ fontSize: 12, color: "#9AA5B4", fontWeight: 600 }}>Bayar sekali, akses penuh</div>
-                  </div>
-                  <div style={{ fontSize: 12, color: "#27AE60", fontWeight: 700, background: "#EEF9EE", padding: "6px 12px", borderRadius: 50 }}>
-                    👥 {formatSiswa(selectedPaket.siswa)} siswa mengerjakan
-                  </div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                  <div style={{ fontSize: 26, fontWeight: 900, color: "#E67E22" }}>{formatHarga(selectedPaket.harga)}</div>
+                  <div style={{ fontSize: 11, color: "#27AE60", fontWeight: 700, background: "#EEF9EE", padding: "5px 10px", borderRadius: 50 }}>👥 {formatSiswa(selectedPaket.siswa)} siswa</div>
                 </div>
 
-                {/* Coba gratis */}
-                <div style={{ background: "#EEF2F9", borderRadius: 12, padding: "10px 14px", marginBottom: 16, textAlign: "center" }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: "#1B3A6B" }}>🎁 Coba 3 soal pertama GRATIS sebelum beli!</span>
+                <div style={{ background: "#EEF2F9", borderRadius: 10, padding: "10px 14px", marginBottom: 14, textAlign: "center" }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "#1B3A6B" }}>🎁 Coba 3 soal pertama GRATIS!</span>
                 </div>
 
                 <div style={{ display: "flex", gap: 10 }}>
-                  <button style={{ flex: 1, background: "white", color: "#1B3A6B", border: "2px solid #1B3A6B", borderRadius: 12, padding: "12px", fontSize: 14, fontWeight: 800, cursor: "pointer", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                    Coba Gratis
-                  </button>
-                  <button
-                    onClick={() => setShowTimerSetup(true)}
-                    style={{ flex: 2, background: "#E67E22", color: "white", border: "none", borderRadius: 12, padding: "12px", fontSize: 14, fontWeight: 800, cursor: "pointer", fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-                  >
-                    Beli & Mulai →
-                  </button>
+                  <button className="btn-outline" style={{ flex: 1 }}>Coba Gratis</button>
+                  <button onClick={() => setShowTimerSetup(true)} className="btn-primary" style={{ flex: 2 }}>Beli & Mulai →</button>
                 </div>
               </>
             ) : (
               <>
-                {/* TIMER SETUP */}
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
                   <button onClick={() => setShowTimerSetup(false)} style={{ background: "#F0F2F7", border: "none", borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontWeight: 700, fontSize: 13, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>← Kembali</button>
-                  <div style={{ fontWeight: 800, fontSize: 17, color: "#0F1E3A" }}>Pilih Mode Timer</div>
+                  <div style={{ fontWeight: 800, fontSize: 17 }}>Pilih Mode Timer</div>
                 </div>
 
-                <div style={{ background: "#F8F9FA", borderRadius: 10, padding: "10px 14px", marginBottom: 20 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#4A5568" }}>{selectedPaket.judul} · {kelas?.label} · {mapel?.label} · {kabupaten}</div>
+                <div style={{ background: "#F8F9FA", borderRadius: 10, padding: "10px 14px", marginBottom: 20, fontSize: 13, fontWeight: 600, color: "#4A5568" }}>
+                  {selectedPaket.judul} · {kelas?.label} · {mapel?.label}
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
-                  <div
-                    onClick={() => setTimerMode("standar")}
-                    style={{ border: `2px solid ${timerMode === "standar" ? "#E67E22" : "#E2E8F0"}`, borderRadius: 14, padding: 18, cursor: "pointer", background: timerMode === "standar" ? "#FFF4EC" : "white", textAlign: "center", transition: "all 0.2s" }}
-                  >
-                    <div style={{ fontSize: 32, marginBottom: 8 }}>⏱️</div>
-                    <div style={{ fontWeight: 800, fontSize: 14, color: "#0F1E3A", marginBottom: 4 }}>Timer Standar</div>
-                    <div style={{ fontSize: 12, color: "#9AA5B4", lineHeight: 1.5, marginBottom: 8 }}>Waktu sesuai standar ujian resmi</div>
-                    <div style={{ fontWeight: 900, fontSize: 20, color: "#E67E22" }}>{selectedPaket.waktu} menit</div>
-                  </div>
-
-                  <div
-                    onClick={() => setTimerMode("custom")}
-                    style={{ border: `2px solid ${timerMode === "custom" ? "#E67E22" : "#E2E8F0"}`, borderRadius: 14, padding: 18, cursor: "pointer", background: timerMode === "custom" ? "#FFF4EC" : "white", textAlign: "center", transition: "all 0.2s" }}
-                  >
-                    <div style={{ fontSize: 32, marginBottom: 8 }}>🎯</div>
-                    <div style={{ fontWeight: 800, fontSize: 14, color: "#0F1E3A", marginBottom: 4 }}>Timer Custom</div>
-                    <div style={{ fontSize: 12, color: "#9AA5B4", lineHeight: 1.5, marginBottom: 8 }}>Atur sendiri waktumu</div>
-                    <div style={{ fontWeight: 900, fontSize: 20, color: "#E67E22" }}>5–180 mnt</div>
-                  </div>
+                <div className="grid-2" style={{ marginBottom: 20 }}>
+                  {[
+                    { mode: "standar", icon: "⏱️", label: "Timer Standar", desc: "Sesuai standar ujian resmi", val: `${selectedPaket.waktu} menit` },
+                    { mode: "custom", icon: "🎯", label: "Timer Custom", desc: "Atur sendiri waktumu", val: "5–180 menit" },
+                  ].map((t) => (
+                    <div
+                      key={t.mode}
+                      onClick={() => setTimerMode(t.mode)}
+                      style={{
+                        border: `2px solid ${timerMode === t.mode ? "#E67E22" : "#E2E8F0"}`,
+                        borderRadius: 14, padding: 16, cursor: "pointer",
+                        background: timerMode === t.mode ? "#FFF4EC" : "white",
+                        textAlign: "center", transition: "all 0.2s",
+                      }}
+                    >
+                      <div style={{ fontSize: 28, marginBottom: 6 }}>{t.icon}</div>
+                      <div style={{ fontWeight: 800, fontSize: 13, marginBottom: 4 }}>{t.label}</div>
+                      <div style={{ fontSize: 11, color: "#9AA5B4", marginBottom: 8 }}>{t.desc}</div>
+                      <div style={{ fontWeight: 900, fontSize: 18, color: "#E67E22" }}>{t.val}</div>
+                    </div>
+                  ))}
                 </div>
 
                 {timerMode === "custom" && (
-                  <div style={{ background: "#F8F9FA", borderRadius: 14, padding: 20, marginBottom: 20 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                      <div style={{ fontWeight: 700, fontSize: 14, color: "#1B3A6B" }}>Atur Waktu</div>
-                      <div style={{ fontWeight: 900, fontSize: 26, color: "#E67E22" }}>{customTimer} menit</div>
+                  <div style={{ background: "#F8F9FA", borderRadius: 14, padding: 18, marginBottom: 20 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
+                      <span style={{ fontWeight: 700, fontSize: 14, color: "#1B3A6B" }}>Atur Waktu</span>
+                      <span style={{ fontWeight: 900, fontSize: 22, color: "#E67E22" }}>{customTimer} mnt</span>
                     </div>
-                    <input
-                      type="range" min={5} max={180} step={5}
-                      value={customTimer}
-                      onChange={(e) => setCustomTimer(Number(e.target.value))}
-                      style={{ width: "100%", marginBottom: 10 }}
-                    />
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#9AA5B4", fontWeight: 600, marginBottom: 14 }}>
+                    <input type="range" min={5} max={180} step={5} value={customTimer} onChange={(e) => setCustomTimer(Number(e.target.value))} />
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#9AA5B4", fontWeight: 600, margin: "8px 0 14px" }}>
                       <span>5 menit</span><span>180 menit</span>
                     </div>
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                       {[15, 30, 45, 60, 90, 120].map(t => (
-                        <button
-                          key={t}
-                          onClick={() => setCustomTimer(t)}
-                          style={{
-                            background: customTimer === t ? "#E67E22" : "white",
-                            color: customTimer === t ? "white" : "#4A5568",
-                            border: `1px solid ${customTimer === t ? "#E67E22" : "#E2E8F0"}`,
-                            borderRadius: 50, padding: "5px 14px", fontSize: 12,
-                            fontWeight: 700, cursor: "pointer",
-                            fontFamily: "'Plus Jakarta Sans', sans-serif",
-                          }}
-                        >{t} mnt</button>
+                        <button key={t} onClick={() => setCustomTimer(t)} style={{ background: customTimer === t ? "#E67E22" : "white", color: customTimer === t ? "white" : "#4A5568", border: `1px solid ${customTimer === t ? "#E67E22" : "#E2E8F0"}`, borderRadius: 50, padding: "5px 12px", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{t} mnt</button>
                       ))}
                     </div>
                   </div>
                 )}
 
                 {timerMode ? (
-                  <button style={{ width: "100%", background: "#E67E22", color: "white", border: "none", borderRadius: 12, padding: "15px", fontSize: 16, fontWeight: 800, cursor: "pointer", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                    🚀 Mulai Latihan — {timerMode === "standar" ? selectedPaket.waktu : customTimer} Menit
+                  <button className="btn-primary" style={{ width: "100%", padding: 14, fontSize: 15 }}>
+                    🚀 Mulai — {timerMode === "standar" ? selectedPaket.waktu : customTimer} Menit
                   </button>
                 ) : (
-                  <div style={{ textAlign: "center", padding: 16, fontSize: 13, color: "#9AA5B4", fontWeight: 600, background: "#F8F9FA", borderRadius: 12 }}>
-                    👆 Pilih mode timer dulu untuk mulai
+                  <div style={{ textAlign: "center", padding: 14, fontSize: 13, color: "#9AA5B4", fontWeight: 600, background: "#F8F9FA", borderRadius: 12 }}>
+                    👆 Pilih mode timer dulu
                   </div>
                 )}
               </>
@@ -268,92 +222,57 @@ export default function SD() {
       )}
 
       {/* NAVBAR */}
-      <nav style={{ background: "#1B3A6B", padding: "0 28px", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <nav className="navbar">
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 40, height: 40, background: "#D4A017", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 18, color: "#1B3A6B" }}>K</div>
-          <span style={{ color: "white", fontWeight: 900, fontSize: 22 }}>Kisio<span style={{ color: "#D4A017" }}>ID</span></span>
+          <span className="navbar-title" style={{ color: "white", fontWeight: 900, fontSize: 22 }}>Kisio<span style={{ color: "#D4A017" }}>ID</span></span>
         </div>
-        <div style={{ display: "flex", gap: 12 }}>
-          <button style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 10, padding: "9px 22px", color: "white", cursor: "pointer", fontWeight: 700, fontSize: 15, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Masuk</button>
-          <button style={{ background: "#D4A017", border: "none", borderRadius: 10, padding: "9px 22px", color: "#1B3A6B", cursor: "pointer", fontWeight: 800, fontSize: 15, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Daftar Gratis</button>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button className="navbar-btn-masuk" style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 10, padding: "9px 20px", color: "white", cursor: "pointer", fontWeight: 700, fontSize: 14, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Masuk</button>
+          <button className="navbar-btn-daftar" style={{ background: "#D4A017", border: "none", borderRadius: 10, padding: "9px 20px", color: "#1B3A6B", cursor: "pointer", fontWeight: 800, fontSize: 14, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Daftar Gratis</button>
         </div>
       </nav>
 
       {/* HEADER */}
-      <div style={{ background: "linear-gradient(135deg, #E67E22, #F39C12)", padding: "40px 40px 52px" }}>
-        <button onClick={() => router.push("/")} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 18px", color: "white", cursor: "pointer", fontWeight: 700, fontSize: 14, marginBottom: 24, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+      <div style={{ background: "linear-gradient(135deg, #E67E22, #F39C12)", padding: "32px 20px 44px" }}>
+        <button onClick={() => router.push("/")} style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "8px 16px", color: "white", cursor: "pointer", fontWeight: 700, fontSize: 14, marginBottom: 20, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
           ← Kembali
         </button>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 20 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <div style={{ fontSize: 52 }}>🎒</div>
-            <div>
-              <div style={{ display: "inline-block", background: "rgba(255,255,255,0.25)", color: "white", fontSize: 12, fontWeight: 800, padding: "4px 14px", borderRadius: 50, marginBottom: 8 }}>SEKOLAH DASAR</div>
-              <h1 style={{ color: "white", fontWeight: 900, fontSize: 28, marginBottom: 6 }}>Latihan Soal SD</h1>
-              <p style={{ color: "rgba(255,255,255,0.85)", fontSize: 15 }}>Kelas 1–6 · Semua Mata Pelajaran · Kisi-kisi MGMP Lokal</p>
-            </div>
-          </div>
-
-          {/* Progress Steps */}
-          <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
-            {steps.map((step, i) => (
-              <div key={step.label} style={{ display: "flex", alignItems: "center" }}>
-                <div style={{
-                  display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
-                }}>
-                  <div style={{
-                    width: 32, height: 32, borderRadius: "50%",
-                    background: step.done ? "white" : "rgba(255,255,255,0.25)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontWeight: 900, fontSize: 14,
-                    color: step.done ? "#E67E22" : "rgba(255,255,255,0.7)",
-                  }}>
-                    {step.done ? "✓" : i + 1}
-                  </div>
-                  <div style={{ fontSize: 10, color: step.done ? "white" : "rgba(255,255,255,0.6)", fontWeight: 700 }}>{step.label}</div>
-                </div>
-                {i < steps.length - 1 && (
-                  <div style={{ width: 32, height: 2, background: step.done ? "white" : "rgba(255,255,255,0.25)", margin: "0 4px", marginBottom: 16 }} />
-                )}
-              </div>
-            ))}
+        <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+          <div style={{ fontSize: 48 }}>🎒</div>
+          <div>
+            <div style={{ display: "inline-block", background: "rgba(255,255,255,0.25)", color: "white", fontSize: 12, fontWeight: 800, padding: "4px 14px", borderRadius: 50, marginBottom: 8 }}>SEKOLAH DASAR</div>
+            <h1 className="hero-title" style={{ color: "white", marginBottom: 4 }}>Latihan Soal SD</h1>
+            <p style={{ color: "rgba(255,255,255,0.85)", fontSize: 14 }}>Kelas 1–6 · Semua Mata Pelajaran · Kisi-kisi MGMP Lokal</p>
           </div>
         </div>
       </div>
 
-      <div style={{ padding: "28px 40px", maxWidth: 1200, margin: "0 auto" }}>
+      {/* MAIN CONTENT */}
+      <div className="container">
 
         {/* STEP 1 - PILIH DAERAH */}
-        <div style={{ background: "white", borderRadius: 18, padding: 24, marginBottom: 20, boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
+        <div className="card">
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-            <div style={{ width: 28, height: 28, borderRadius: "50%", background: provinsi && kabupaten ? "#27AE60" : "#E67E22", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 13 }}>
+            <div className="step-circle" style={{ background: provinsi && kabupaten ? "#27AE60" : "#E67E22" }}>
               {provinsi && kabupaten ? "✓" : "1"}
             </div>
             <div style={{ fontWeight: 800, fontSize: 17, color: "#1B3A6B" }}>Pilih Daerah</div>
           </div>
-          <div style={{ fontSize: 13, color: "#9AA5B4", marginBottom: 18, fontWeight: 600, paddingLeft: 38 }}>Soal akan disesuaikan dengan kisi-kisi MGMP daerahmu</div>
+          <div style={{ fontSize: 13, color: "#9AA5B4", marginBottom: 16, paddingLeft: 38, fontWeight: 600 }}>Soal disesuaikan dengan kisi-kisi MGMP daerahmu</div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div className="grid-2">
             <div>
               <div style={{ fontSize: 13, fontWeight: 700, color: "#4A5568", marginBottom: 8 }}>Provinsi</div>
-              <select
-                value={provinsi}
-                onChange={(e) => { setProvinsi(e.target.value); setKabupaten(""); setKelas(null); setMapel(null); }}
-                style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: "1.5px solid #E2E8F0", fontSize: 14, fontWeight: 600, fontFamily: "'Plus Jakarta Sans', sans-serif", color: "#1B3A6B", background: "white", cursor: "pointer" }}
-              >
+              <select className="select-input" value={provinsi} onChange={(e) => { setProvinsi(e.target.value); setKabupaten(""); setKelas(null); setMapel(null); }}>
                 <option value="">-- Pilih Provinsi --</option>
                 <option value="kalbar">Kalimantan Barat</option>
               </select>
             </div>
-
             {provinsi && (
               <div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: "#4A5568", marginBottom: 8 }}>Kabupaten / Kota</div>
-                <select
-                  value={kabupaten}
-                  onChange={(e) => { setKabupaten(e.target.value); setKelas(null); setMapel(null); }}
-                  style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: "1.5px solid #E2E8F0", fontSize: 14, fontWeight: 600, fontFamily: "'Plus Jakarta Sans', sans-serif", color: "#1B3A6B", background: "white", cursor: "pointer" }}
-                >
+                <select className="select-input" value={kabupaten} onChange={(e) => { setKabupaten(e.target.value); setKelas(null); setMapel(null); }}>
                   <option value="">-- Pilih Kabupaten/Kota --</option>
                   {kabupatenKalbar.map((kab) => (
                     <option key={kab} value={kab}>{kab}</option>
@@ -365,7 +284,7 @@ export default function SD() {
 
           {kabupaten && (
             <div style={{ marginTop: 14, background: "#EEF9EE", borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 16 }}>✅</span>
+              <span>✅</span>
               <span style={{ fontSize: 13, fontWeight: 700, color: "#27AE60" }}>Soal dari MGMP {kabupaten} siap!</span>
             </div>
           )}
@@ -373,32 +292,32 @@ export default function SD() {
 
         {/* STEP 2 - PILIH KELAS */}
         {kabupaten && (
-          <div style={{ background: "white", borderRadius: 18, padding: 24, marginBottom: 20, boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
+          <div className="card">
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-              <div style={{ width: 28, height: 28, borderRadius: "50%", background: kelas ? "#27AE60" : "#E67E22", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 13 }}>
+              <div className="step-circle" style={{ background: kelas ? "#27AE60" : "#E67E22" }}>
                 {kelas ? "✓" : "2"}
               </div>
               <div style={{ fontWeight: 800, fontSize: 17, color: "#1B3A6B" }}>Pilih Kelas</div>
             </div>
-            <div style={{ fontSize: 13, color: "#9AA5B4", marginBottom: 18, fontWeight: 600, paddingLeft: 38 }}>Pilih kelas yang ingin kamu latih</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 12 }}>
+            <div style={{ fontSize: 13, color: "#9AA5B4", marginBottom: 16, paddingLeft: 38, fontWeight: 600 }}>Pilih kelas yang ingin kamu latih</div>
+            <div className="grid-6">
               {kelasList.map((k) => (
                 <div
                   key={k.id}
                   onClick={() => { setKelas(k); setMapel(null); }}
                   style={{
                     background: kelas?.id === k.id ? "#E67E22" : "#F8F9FA",
-                    borderRadius: 14, padding: "16px 10px", cursor: "pointer",
+                    borderRadius: 14, padding: "14px 8px", cursor: "pointer",
                     border: `2px solid ${kelas?.id === k.id ? "#E67E22" : "transparent"}`,
                     textAlign: "center", transition: "all 0.2s", position: "relative",
                   }}
                 >
                   {k.ujianAkhir && (
-                    <div style={{ position: "absolute", top: -8, right: -8, background: "#E74C3C", color: "white", fontSize: 9, fontWeight: 800, padding: "2px 8px", borderRadius: 50 }}>UJIAN</div>
+                    <div style={{ position: "absolute", top: -8, right: -8, background: "#E74C3C", color: "white", fontSize: 9, fontWeight: 800, padding: "2px 6px", borderRadius: 50 }}>UJIAN</div>
                   )}
-                  <div style={{ fontSize: 22, marginBottom: 6 }}>{k.icon}</div>
-                  <div style={{ fontWeight: 800, fontSize: 13, color: kelas?.id === k.id ? "white" : "#1B3A6B" }}>{k.label}</div>
-                  <div style={{ fontSize: 10, color: kelas?.id === k.id ? "rgba(255,255,255,0.85)" : "#9AA5B4", marginTop: 4, lineHeight: 1.4 }}>{k.desc}</div>
+                  <div style={{ fontSize: 20, marginBottom: 4 }}>{k.icon}</div>
+                  <div style={{ fontWeight: 800, fontSize: 12, color: kelas?.id === k.id ? "white" : "#1B3A6B" }}>{k.label}</div>
+                  <div style={{ fontSize: 9, color: kelas?.id === k.id ? "rgba(255,255,255,0.85)" : "#9AA5B4", marginTop: 2, lineHeight: 1.4 }}>{k.desc}</div>
                 </div>
               ))}
             </div>
@@ -407,28 +326,28 @@ export default function SD() {
 
         {/* STEP 3 - PILIH MAPEL */}
         {kelas && (
-          <div style={{ background: "white", borderRadius: 18, padding: 24, marginBottom: 20, boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
+          <div className="card">
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-              <div style={{ width: 28, height: 28, borderRadius: "50%", background: mapel ? "#27AE60" : "#E67E22", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 13 }}>
+              <div className="step-circle" style={{ background: mapel ? "#27AE60" : "#E67E22" }}>
                 {mapel ? "✓" : "3"}
               </div>
               <div style={{ fontWeight: 800, fontSize: 17, color: "#1B3A6B" }}>Pilih Mata Pelajaran</div>
             </div>
-            <div style={{ fontSize: 13, color: "#9AA5B4", marginBottom: 18, fontWeight: 600, paddingLeft: 38 }}>Untuk {kelas.label} · {kabupaten}</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12 }}>
+            <div style={{ fontSize: 13, color: "#9AA5B4", marginBottom: 16, paddingLeft: 38, fontWeight: 600 }}>Untuk {kelas.label} · {kabupaten}</div>
+            <div className="grid-5">
               {mapelList.map((m) => (
                 <div
                   key={m.id}
                   onClick={() => setMapel(m)}
                   style={{
                     background: mapel?.id === m.id ? m.color : "#F8F9FA",
-                    borderRadius: 14, padding: "18px 10px", cursor: "pointer",
+                    borderRadius: 14, padding: "16px 8px", cursor: "pointer",
                     border: `2px solid ${mapel?.id === m.id ? m.color : "transparent"}`,
                     textAlign: "center", transition: "all 0.2s",
                   }}
                 >
-                  <div style={{ fontSize: 28, marginBottom: 8 }}>{m.icon}</div>
-                  <div style={{ fontWeight: 800, fontSize: 13, color: mapel?.id === m.id ? "white" : "#1B3A6B" }}>{m.label}</div>
+                  <div style={{ fontSize: 26, marginBottom: 6 }}>{m.icon}</div>
+                  <div style={{ fontWeight: 800, fontSize: 12, color: mapel?.id === m.id ? "white" : "#1B3A6B" }}>{m.label}</div>
                 </div>
               ))}
             </div>
@@ -438,160 +357,104 @@ export default function SD() {
         {/* STEP 4 - PAKET SOAL */}
         {sudahLengkap && (
           <div>
-            {/* Info Pilihan */}
-            <div style={{ background: "white", borderRadius: 14, padding: "14px 20px", marginBottom: 20, display: "flex", gap: 8, flexWrap: "wrap", boxShadow: "0 2px 10px rgba(0,0,0,0.07)", alignItems: "center" }}>
-              <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#E67E22", color: "white", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 13 }}>4</div>
+            {/* Info */}
+            <div className="card" style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", padding: "12px 20px" }}>
+              <div className="step-circle" style={{ background: "#E67E22" }}>4</div>
               <span style={{ fontSize: 13, fontWeight: 700, color: "#4A5568" }}>Soal untuk:</span>
-              <div style={{ background: "#1B3A6B", color: "white", fontSize: 12, fontWeight: 700, padding: "3px 12px", borderRadius: 50 }}>{kelas.label}</div>
-              <div style={{ background: mapel.color, color: "white", fontSize: 12, fontWeight: 700, padding: "3px 12px", borderRadius: 50 }}>{mapel.label}</div>
-              <div style={{ background: "#D4A017", color: "#1B3A6B", fontSize: 12, fontWeight: 700, padding: "3px 12px", borderRadius: 50 }}>📍 {kabupaten}</div>
-              <button
-                onClick={() => { setKelas(null); setMapel(null); setProvinsi(""); setKabupaten(""); }}
-                style={{ marginLeft: "auto", background: "transparent", border: "none", fontSize: 12, color: "#9AA5B4", cursor: "pointer", fontWeight: 700, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-              >Ubah pilihan ↩</button>
+              <div style={{ background: "#1B3A6B", color: "white", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 50 }}>{kelas.label}</div>
+              <div style={{ background: mapel.color, color: "white", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 50 }}>{mapel.label}</div>
+              <div style={{ background: "#D4A017", color: "#1B3A6B", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 50 }}>📍 {kabupaten}</div>
+              <button onClick={() => { setKelas(null); setMapel(null); setProvinsi(""); setKabupaten(""); }} style={{ marginLeft: "auto", background: "transparent", border: "none", fontSize: 12, color: "#9AA5B4", cursor: "pointer", fontWeight: 700, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Ubah ↩</button>
             </div>
 
             {/* TAB */}
-            <div style={{ display: "flex", gap: 4, marginBottom: 20, background: "white", padding: 6, borderRadius: 14, boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
+            <div className="tab-container">
               {[["latihan", "📝 Latihan Soal"], ["kisiKisi", "📋 Kisi-Kisi"]].map(([tab, label]) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  style={{
-                    flex: 1, background: activeTab === tab ? "#E67E22" : "transparent",
-                    color: activeTab === tab ? "white" : "#4A5568",
-                    border: "none", borderRadius: 10, padding: "12px",
-                    fontSize: 15, fontWeight: 800, cursor: "pointer",
-                    fontFamily: "'Plus Jakarta Sans', sans-serif", transition: "all 0.2s",
-                  }}
-                >{label}</button>
+                <button key={tab} onClick={() => setActiveTab(tab)} className="tab-btn" style={{ background: activeTab === tab ? "#E67E22" : "transparent", color: activeTab === tab ? "white" : "#4A5568" }}>{label}</button>
               ))}
             </div>
 
-            {/* TAB LATIHAN SOAL */}
+            {/* LATIHAN SOAL */}
             {activeTab === "latihan" && (
               <div>
                 {/* FILTER */}
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}>
+                <div className="filter-container">
                   {filterList.map(f => (
-                    <button
-                      key={f.id}
-                      onClick={() => setActiveFilter(f.id)}
-                      style={{
-                        background: activeFilter === f.id ? "#E67E22" : "white",
-                        color: activeFilter === f.id ? "white" : "#4A5568",
-                        border: `1px solid ${activeFilter === f.id ? "#E67E22" : "#E2E8F0"}`,
-                        borderRadius: 50, padding: "7px 18px", fontSize: 13,
-                        fontWeight: 700, cursor: "pointer", transition: "all 0.2s",
-                        fontFamily: "'Plus Jakarta Sans', sans-serif",
-                      }}
-                    >{f.label}</button>
+                    <button key={f.id} onClick={() => setActiveFilter(f.id)} className="filter-btn" style={{ background: activeFilter === f.id ? "#E67E22" : "white", color: activeFilter === f.id ? "white" : "#4A5568", border: `1px solid ${activeFilter === f.id ? "#E67E22" : "#E2E8F0"}` }}>{f.label}</button>
                   ))}
                 </div>
 
                 {/* GRID PAKET */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 28 }}>
+                <div className="grid-4" style={{ marginBottom: 24 }}>
                   {filteredPaket.map((paket) => (
-                    <div
-                      key={paket.id}
-                      onClick={() => openModal(paket)}
-                      style={{
-                        background: "white", borderRadius: 14,
-                        overflow: "hidden", cursor: "pointer",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
-                        transition: "all 0.2s",
-                      }}
-                    >
-                      {/* Thumbnail */}
-                      <div style={{
-                        background: `linear-gradient(135deg, ${mapel.color}, ${mapel.color}99)`,
-                        padding: "22px 12px", textAlign: "center", position: "relative",
-                      }}>
+                    <div key={paket.id} className="paket-card" onClick={() => openModal(paket)}>
+                      <div style={{ background: `linear-gradient(135deg, ${mapel.color}, ${mapel.color}99)`, padding: "20px 12px", textAlign: "center", position: "relative" }}>
                         {paket.badge && (
                           <div style={{ position: "absolute", top: 8, left: 8, background: paket.badgeColor, color: "white", fontSize: 9, fontWeight: 800, padding: "2px 8px", borderRadius: 50 }}>{paket.badge}</div>
                         )}
-                        <div style={{ fontSize: 34 }}>{paket.emoji}</div>
-                        <div style={{ color: "white", fontWeight: 800, fontSize: 13, marginTop: 8, lineHeight: 1.3 }}>{paket.judul}</div>
+                        <div style={{ fontSize: 32 }}>{paket.emoji}</div>
+                        <div style={{ color: "white", fontWeight: 800, fontSize: 12, marginTop: 6, lineHeight: 1.3 }}>{paket.judul}</div>
                       </div>
-
-                      {/* Info */}
-                      <div style={{ padding: "12px 12px 14px" }}>
-                        <div style={{ fontSize: 11, color: "#9AA5B4", fontWeight: 600, marginBottom: 4 }}>
-                          {paket.soal} Soal · {paket.waktu} mnt
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-                          <div style={{ fontSize: 16, fontWeight: 900, color: "#E67E22" }}>{formatHarga(paket.harga)}</div>
+                      <div style={{ padding: "12px" }}>
+                        <div style={{ fontSize: 11, color: "#9AA5B4", fontWeight: 600, marginBottom: 4 }}>{paket.soal} Soal · {paket.waktu} mnt</div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                          <div style={{ fontSize: 15, fontWeight: 900, color: "#E67E22" }}>{formatHarga(paket.harga)}</div>
                           <div style={{ fontSize: 10, color: "#9AA5B4", fontWeight: 600 }}>👥 {formatSiswa(paket.siswa)}</div>
                         </div>
-                        <div style={{
-                          width: "100%", background: "#E67E22", color: "white",
-                          border: "none", borderRadius: 8, padding: "9px",
-                          fontSize: 12, fontWeight: 800, cursor: "pointer",
-                          textAlign: "center", fontFamily: "'Plus Jakarta Sans', sans-serif",
-                        }}>
-                          Selengkapnya
-                        </div>
+                        <div style={{ width: "100%", background: "#E67E22", color: "white", border: "none", borderRadius: 8, padding: "8px", fontSize: 12, fontWeight: 800, cursor: "pointer", textAlign: "center" }}>Selengkapnya</div>
                       </div>
                     </div>
                   ))}
                 </div>
 
-                {/* BANNER COBA GRATIS */}
-                <div style={{ background: "linear-gradient(135deg, #1B3A6B, #2D5FA8)", borderRadius: 18, padding: 28, color: "white", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 20 }}>
+                {/* BANNER */}
+                <div className="banner-coba">
                   <div>
-                    <div style={{ fontWeight: 900, fontSize: 20, marginBottom: 6 }}>🎁 Coba Dulu Sebelum Beli!</div>
-                    <div style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", marginBottom: 12 }}>3 soal pertama setiap paket bisa dicoba GRATIS — tanpa daftar!</div>
+                    <div style={{ fontWeight: 900, fontSize: 18, marginBottom: 6 }}>🎁 Coba Dulu Sebelum Beli!</div>
+                    <div style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", marginBottom: 14 }}>3 soal pertama setiap paket bisa dicoba GRATIS!</div>
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                      {fiturPaket.map((f, i) => (
-                        <div key={i} style={{ background: "rgba(255,255,255,0.15)", borderRadius: 50, padding: "4px 12px", fontSize: 12, fontWeight: 600 }}>
-                          {f.icon} {f.text}
-                        </div>
+                      {fiturPaket.slice(0, 3).map((f, i) => (
+                        <div key={i} style={{ background: "rgba(255,255,255,0.15)", borderRadius: 50, padding: "4px 12px", fontSize: 12, fontWeight: 600 }}>{f.icon} {f.text}</div>
                       ))}
                     </div>
                   </div>
-                  <button style={{ background: "#D4A017", border: "none", borderRadius: 12, padding: "14px 32px", color: "#1B3A6B", fontWeight: 800, fontSize: 15, cursor: "pointer", fontFamily: "'Plus Jakarta Sans', sans-serif", flexShrink: 0 }}>
-                    Coba Gratis Sekarang →
+                  <button style={{ background: "#D4A017", border: "none", borderRadius: 12, padding: "12px 28px", color: "#1B3A6B", fontWeight: 800, fontSize: 14, cursor: "pointer", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    Coba Gratis →
                   </button>
                 </div>
               </div>
             )}
 
-            {/* TAB KISI-KISI */}
+            {/* KISI-KISI */}
             {activeTab === "kisiKisi" && (
               <div>
-                <div style={{ background: "white", borderRadius: 18, padding: 28, marginBottom: 16, boxShadow: "0 2px 10px rgba(0,0,0,0.07)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+                <div className="card">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
                     <div>
-                      <div style={{ fontWeight: 800, fontSize: 18, color: "#1B3A6B" }}>Kisi-Kisi {mapel.label}</div>
+                      <div style={{ fontWeight: 800, fontSize: 17, color: "#1B3A6B" }}>Kisi-Kisi {mapel.label}</div>
                       <div style={{ fontSize: 13, color: "#9AA5B4", fontWeight: 600, marginTop: 4 }}>{kelas.label} · {kabupaten}</div>
                     </div>
-                    <button style={{ background: "#1B3A6B", color: "white", border: "none", borderRadius: 10, padding: "10px 20px", fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                      ⬇️ Unduh PDF
-                    </button>
+                    <button className="btn-primary" style={{ fontSize: 13 }}>⬇️ Unduh PDF</button>
                   </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+                  <div className="grid-3">
                     {kisiKisiDummy.map((bab, i) => (
-                      <div key={i} style={{ borderLeft: "3px solid #E67E22", paddingLeft: 16 }}>
-                        <div style={{ fontSize: 11, fontWeight: 800, color: "#E67E22", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>{bab.bab}</div>
-                        <div style={{ fontWeight: 800, fontSize: 15, color: "#0F1E3A", marginBottom: 4 }}>{bab.judul}</div>
-                        <div style={{ fontSize: 13, color: "#4A5568", marginBottom: 10 }}>{bab.kompetensi}</div>
-                        <div style={{ fontSize: 12, color: "#4A5568" }}>
-                          {bab.indikator.map((ind, j) => (
-                            <div key={j} style={{ display: "flex", gap: 6, marginBottom: 4 }}>
-                              <span style={{ color: "#E67E22", fontWeight: 800, flexShrink: 0 }}>•</span>
-                              <span>{ind}</span>
-                            </div>
-                          ))}
-                        </div>
+                      <div key={i} style={{ borderLeft: "3px solid #E67E22", paddingLeft: 14 }}>
+                        <div style={{ fontSize: 10, fontWeight: 800, color: "#E67E22", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>{bab.bab}</div>
+                        <div style={{ fontWeight: 800, fontSize: 14, color: "#0F1E3A", marginBottom: 4 }}>{bab.judul}</div>
+                        <div style={{ fontSize: 12, color: "#4A5568", marginBottom: 8 }}>{bab.kompetensi}</div>
+                        {bab.indikator.map((ind, j) => (
+                          <div key={j} style={{ display: "flex", gap: 6, marginBottom: 4 }}>
+                            <span style={{ color: "#E67E22", fontWeight: 800, flexShrink: 0 }}>•</span>
+                            <span style={{ fontSize: 12, color: "#4A5568" }}>{ind}</span>
+                          </div>
+                        ))}
                       </div>
                     ))}
                   </div>
                 </div>
-
                 <div style={{ background: "#FFF8EE", border: "1px solid #F39C12", borderRadius: 14, padding: 16, textAlign: "center" }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#E67E22" }}>📋 Kisi-kisi berdasarkan Kurikulum Merdeka & MGMP {kabupaten}</div>
-                  <div style={{ fontSize: 12, color: "#9AA5B4", marginTop: 4 }}>Diperbarui setiap semester sesuai kebijakan dinas pendidikan setempat</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#E67E22" }}>📋 Kisi-kisi berdasarkan Kurikulum Merdeka & MGMP {kabupaten}</div>
+                  <div style={{ fontSize: 12, color: "#9AA5B4", marginTop: 4 }}>Diperbarui setiap semester</div>
                 </div>
               </div>
             )}
@@ -600,12 +463,12 @@ export default function SD() {
       </div>
 
       {/* FOOTER */}
-      <div style={{ background: "#0F1E3A", padding: "24px", textAlign: "center", marginTop: 48 }}>
+      <div className="footer">
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 8 }}>
-          <div style={{ width: 30, height: 30, background: "#D4A017", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 14, color: "#1B3A6B" }}>K</div>
-          <span style={{ color: "white", fontWeight: 900, fontSize: 16 }}>Kisio<span style={{ color: "#D4A017" }}>ID</span></span>
+          <div style={{ width: 28, height: 28, background: "#D4A017", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 13, color: "#1B3A6B" }}>K</div>
+          <span style={{ color: "white", fontWeight: 900, fontSize: 15 }}>Kisio<span style={{ color: "#D4A017" }}>ID</span></span>
         </div>
-        <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 13 }}>© 2025 KisioID — Platform Latihan Soal #1 Indonesia</div>
+        <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 12 }}>© 2025 KisioID — Platform Latihan Soal #1 Indonesia</div>
       </div>
 
     </div>
