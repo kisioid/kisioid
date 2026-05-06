@@ -1,9 +1,9 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "../../lib/supabase";
 
-export default function Kuis() {
+function KuisContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const paketId = searchParams.get("paket");
@@ -549,5 +549,12 @@ export default function Kuis() {
 
       </div>
     </div>
+  );
+}
+export default function Kuis() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <KuisContent />
+    </Suspense>
   );
 }

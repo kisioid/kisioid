@@ -23,6 +23,7 @@ export default function Home() {
   const router = useRouter();
 
   return (
+    
     <div className="min-h-screen" style={{ background: "#F0F2F7" }}>
 
       {/* NAVBAR */}
@@ -49,6 +50,15 @@ export default function Home() {
         <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 15, maxWidth: 400, margin: "0 auto 32px", lineHeight: 1.7 }}>
           Latihan soal dari kisi-kisi MGMP resmi seluruh Indonesia. Pilih jenjangmu dan mulai latihan sekarang!
         </p>
+        {/* TOMBOL UJI COBA SOAL */}
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 24 }}>
+        <button
+          onClick={() => router.push('/kuis?paket=31df7883-20ea-43dc-800e-8cbc473a8aca')}
+          style={{ background: "#D4A017", color: "white", border: "none", borderRadius: 12, padding: "16px 32px", fontSize: 18, fontWeight: 700, cursor: "pointer" }}
+        >
+          🧪 Uji Coba Soal
+        </button>
+      </div>
         <div style={{ display: "flex", gap: 32, justifyContent: "center", flexWrap: "wrap", marginTop: 32 }}>
           {stats.map(([val, label]) => (
             <div key={label} style={{ textAlign: "center" }}>
