@@ -20,6 +20,8 @@ function KuisContent() {
   const [selesai, setSelesai] = useState(false);
   const [hasil, setHasil] = useState(null);
   const timerRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+useEffect(() => { setIsMobile(window.innerWidth < 768); }, []);
 
   useEffect(() => {
     if (!paketId) { setError("Paket soal tidak ditemukan!"); setLoading(false); return; }
@@ -481,7 +483,7 @@ function KuisContent() {
         </div>
 
         {/* KOLOM KANAN - NAVIGASI SOAL */}
-<div className="hidden md:block" style={{ width: 280, flexShrink: 0, position: "sticky", top: 80 }}>
+<div style={{ display: isMobile ? "none" : "block", width: 280, flexShrink: 0, position: "sticky", top: 80 }}>
 
           {/* INFO SOAL */}
           <div style={{ background: "white", borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: "0 2px 8px rgba(0,0,0,0.07)" }}>
