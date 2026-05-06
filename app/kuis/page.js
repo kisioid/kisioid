@@ -22,6 +22,7 @@ function KuisContent() {
   const timerRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
 useEffect(() => { setIsMobile(window.innerWidth < 768); }, []);
+const [showNav, setShowNav] = useState(false);
 
   useEffect(() => {
     if (!paketId) { setError("Paket soal tidak ditemukan!"); setLoading(false); return; }
@@ -482,8 +483,12 @@ useEffect(() => { setIsMobile(window.innerWidth < 768); }, []);
           </div>
         </div>
 
-        {/* KOLOM KANAN - NAVIGASI SOAL */}
-<div style={{ display: isMobile ? "none" : "block", width: 280, flexShrink: 0, position: "sticky", top: 80 }}>
+        {/* TOMBOL TOGGLE NAVIGASI */}
+<button onClick={() => setShowNav(p => !p)}
+  style={{ position: "fixed", bottom: 80, right: 16, zIndex: 999, background: "#1B3A6B", color: "white", border: "none", borderRadius: "50%", width: 48, height: 48, fontSize: 20, cursor: "pointer", boxShadow: "0 4px 12px rgba(0,0,0,0.3)" }}>
+  {showNav ? "✕" : "☰"}
+</button>
+<div style={{ display: isMobile ? (showNav ? "block" : "none") : "block", width: 280, flexShrink: 0, position: isMobile ? "fixed" : "sticky", top: isMobile ? 0 : 80, right: isMobile ? 0 : "auto", height: isMobile ? "100vh" : "auto", zIndex: 998, background: "white", overflowY: "auto", padding: isMobile ? 16 : 0 }}>
 
           {/* INFO SOAL */}
           <div style={{ background: "white", borderRadius: 14, padding: 16, marginBottom: 14, boxShadow: "0 2px 8px rgba(0,0,0,0.07)" }}>
